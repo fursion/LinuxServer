@@ -1,4 +1,4 @@
-安装Docker
+# 安装Docker
 
 安装环境 CentOS
 
@@ -27,7 +27,7 @@
 #4,安装Docker相关内容 docker-ce 社区版
  yum install docker-ce docker-ce-cli containerd.io
 #5,启动Docker
-	systemctr start docker
+	systemctl start docker
 #6,使用docker version 查看是否安装成功
 #7,查看下载的docker镜像 docker images
 ```
@@ -39,4 +39,21 @@
     yum remove docker-ce docker-ce-cli containerd.io
 #删除资源
     rm -rf /var/lib/docker
+```
+
+
+# 配置Docker镜像加速
+## 阿里云镜像加速
+
+[阿里镜像服务控制台](https://cr.console.aliyun.com/cn-beijing/instances/mirrors)
+
+```shell
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": ["https://4j91ddvq.mirror.aliyuncs.com"]         #此地址为专用地址
+}
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
 ```

@@ -8,7 +8,7 @@ docker info	   	 #显示docker的系统信息，包括镜像和容器的数量
 docker 命令 --help	 #帮助命令
 ```
 
-帮助文档地址：https://docs.docker.com/engine/reference/commandline/build/
+[帮助文档](https://docs.docker.com/engine/reference/commandline/build/):https://docs.docker.com/engine/reference/commandline/build/
 
 ## 镜像命令
 
@@ -45,7 +45,7 @@ docker rmi ID                        	#通过镜像ID删除指定的镜像
 docker rmi -f $(docker images -aq)  	#删除所有镜像
 ```
 
-## [容器命令](容器命令.md)
+## 容器命令
 
 有了镜像之后才可以创建容器，以下以centos镜像举例
 
@@ -324,4 +324,81 @@ docker top 容器id
     }
 ]
 
+```
+**进入当前正在运行的容器**
+```shell
+# 容器通常是使用后台方式运行的，需要进入容器修改一些配置
+#方式一
+# 命令
+docker exec -it 容器id bashshell  #进入容器后开启新的终端，可以进行操作
+# 测试
+[root@learning ~]# docker exec -it bf415be10d10 /bin/bash
+[root@bf415be10d10 /]# ls
+bin  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+[root@bf415be10d10 /]# 
+# 方式二
+docker attach 容器id
+
+# docker attach bf415be10d10 #进入容器正在执行的终端，不会启动新的进程
+```
+从容器拷贝文件到主机
+```sheel
+docker cp 容器id：容器内路径 目的主机路径
+[root@learning home]# ll
+总用量 0
+[root@learning home]# docker cp 24c261848d56:/home/hello.html /home/
+[root@learning home]# ll
+总用量 4
+-rw-r--r-- 1 root root 14 1月   8 21:52 hello.html
+[root@learning home]# 
+#拷贝是一个手动过程，未来可以使用 -v 卷技术同步
+```
+# commit镜像
+
+```shell
+docker commit 提交容器成为一个新的副本
+#命令和git原理类似
+docker commit -m="提交的描述信息" -a="作者" 容器id 目标镜像名:[TAG]
+
+```
+# 容器数据卷
+## 什么是容器数据卷
+### docker的理念
+将应用和环境打包成镜像（容器之间数据共享的技术，将Docker容器中产生的数据同步到本地）
+## 使用数据卷
+### 方式一：直接使用命令挂载
+```shell
+docker run -it -v 主机目录：容器目录
+```
+### 具名和匿名挂载
+```shell
+# 匿名挂载
+-v 容器内路径
+docker run -d -p --name nginx01 -v /etc/nginx nginx
+#查看所有volume 的情况
+[root@Server1 ~]# docker volume ls
+DRIVER    VOLUME NAME
+local     bdf9eee2c151a6a5ce9be9364174daeefaf63bf4f5baa5aaa5e9479c49899574
+#上述举例就是匿名挂载，在 -v 只写了容器内的路径，没有写容器外的路径！
+#具名挂载
+[root@Server1 ~]# docker run -d -P --name nginx02 -v t-nginx:/etc/nginx nginx
+23c0b58171d86589a31e55e5971911e64ebd99eb26a0e74f2fe86227005cc1ff
+[root@Server1 ~]# docker volume ls
+DRIVER    VOLUME NAME
+local     t-nginx
+#通过卷名：容器内路径
+#查看卷路径 docker volume inspect 卷名
+<font color="red">红色</font>
+[root@Server1 ~]# docker volume inspect t-nginx 
+[
+    {
+        "CreatedAt": "2022-01-20T21:19:38+08:00",
+        "Driver": "local",
+        "Labels": null,
+        "Mountpoint": "/var/lib/docker/volumes/t-nginx/_data",
+        "Name": "t-nginx",
+        "Options": null,
+        "Scope": "local"
+    }
+]
 ```
