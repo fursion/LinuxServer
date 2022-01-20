@@ -388,7 +388,6 @@ DRIVER    VOLUME NAME
 local     t-nginx
 #通过卷名：容器内路径
 #查看卷路径 docker volume inspect 卷名
-<font color="red">红色</font>
 [root@Server1 ~]# docker volume inspect t-nginx 
 [
     {
@@ -401,4 +400,22 @@ local     t-nginx
         "Scope": "local"
     }
 ]
+```
+所有的docker容器内的卷，在没有指定目录的情况下都是在`/var/lib/docker/volumes/xxxx/_data`
+我们通过具名挂载的方式，可以方便的找到卷，大多数情况下使用的都是`具名挂载`
+```shell
+# 如何确定是具名挂载还是匿名挂载，还是指定路径挂载！
+-v 容器路径                 #匿名挂载
+-v 卷名:容器路径             #具名挂载
+-v /宿主机路径:容器路径       #指定路径挂载
+```
+扩展：
+```shell
+# 通过 -v 容器内路径:ro rw 改变读写权限
+ro readonly #只读
+rw readwrite #可读可写
+# 一但设置了这个容器权限，容器对我们挂载出来的内容就有限定了！
+docker run -d -P --name nginx02 -v t-nginx:/etc/nginx:ro nginx
+docker run -d -P --name nginx02 -v t-nginx:/etc/nginx:rw nginx
+# ro 只要看到ro 就说明这个路径只能通过宿主机来操作，容器内部是无法操作的！
 ```
