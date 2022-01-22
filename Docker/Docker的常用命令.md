@@ -419,3 +419,55 @@ docker run -d -P --name nginx02 -v t-nginx:/etc/nginx:ro nginx
 docker run -d -P --name nginx02 -v t-nginx:/etc/nginx:rw nginx
 # ro 只要看到ro 就说明这个路径只能通过宿主机来操作，容器内部是无法操作的！
 ```
+# 初识Dockerfile
+## 使用dockerfile生成镜像
+Dockerfile就是用来构建docker镜像的构建文件！命令脚本！
+通过这个脚本可以生成镜像
+```shell
+#创建一个dockerfile文件， 通过这个文件可以生成镜像，镜像是一层一层的，脚本的一个个命令就对应镜像的每一层。
+FROM centos
+
+VOLUME ["volume01","volume02"]
+
+CMD echo "----end----"
+CMD /bin/bash
+#生成镜像 docker build [OPTIONS] PATH | URL | -
+docker build -f /home/docker-test-volume/dockerfile01 -t fursion-centos:1.0 .
+```
+### 测试生成的镜像
+```shell
+#启动生成的镜像
+[root@Server1 docker-test-volume]# docker images
+REPOSITORY       TAG       IMAGE ID       CREATED          SIZE
+fursion-centos   1.0       71ad3658866b   24 minutes ago   231MB
+elasticsearch    7.16.3    3a5e93284781   2 weeks ago      611MB
+nginx            latest    605c77e624dd   3 weeks ago      141MB
+tomcat           latest    fb5657adc892   4 weeks ago      680MB
+mysql            latest    3218b38490ce   4 weeks ago      516MB
+centos           latest    5d0da3dc9764   4 months ago     231MB
+[root@Server1 docker-test-volume]# docker run -it 71ad3658866b /bin/bash
+[root@ce56a965a0ea /]# ls -l
+total 0
+lrwxrwxrwx   1 root root   7 Nov  3  2020 bin -> usr/bin
+drwxr-xr-x   5 root root 360 Jan 22 04:01 dev
+drwxr-xr-x   1 root root  66 Jan 22 04:01 etc
+drwxr-xr-x   2 root root   6 Nov  3  2020 home
+lrwxrwxrwx   1 root root   7 Nov  3  2020 lib -> usr/lib
+lrwxrwxrwx   1 root root   9 Nov  3  2020 lib64 -> usr/lib64
+drwx------   2 root root   6 Sep 15 14:17 lost+found
+drwxr-xr-x   2 root root   6 Nov  3  2020 media
+drwxr-xr-x   2 root root   6 Nov  3  2020 mnt
+drwxr-xr-x   2 root root   6 Nov  3  2020 opt
+dr-xr-xr-x 133 root root   0 Jan 22 04:01 proc
+dr-xr-x---   2 root root 162 Sep 15 14:17 root
+drwxr-xr-x  11 root root 163 Sep 15 14:17 run
+lrwxrwxrwx   1 root root   8 Nov  3  2020 sbin -> usr/sbin
+drwxr-xr-x   2 root root   6 Nov  3  2020 srv
+dr-xr-xr-x  13 root root   0 Jan 22 04:01 sys
+drwxrwxrwt   7 root root 171 Sep 15 14:17 tmp
+drwxr-xr-x  12 root root 144 Sep 15 14:17 usr
+drwxr-xr-x  20 root root 262 Sep 15 14:17 var
+drwxr-xr-x   2 root root   6 Jan 22 04:01 volume01
+drwxr-xr-x   2 root root   6 Jan 22 04:01 volume02
+[root@ce56a965a0ea /]# 
+```
