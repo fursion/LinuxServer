@@ -471,3 +471,4 @@ drwxr-xr-x   2 root root   6 Jan 22 04:01 volume01
 drwxr-xr-x   2 root root   6 Jan 22 04:01 volume02
 [root@ce56a965a0ea /]# 
 ```
+![](Docker/images/screenshot-20220123-120230.png)
