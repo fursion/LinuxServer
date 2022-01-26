@@ -419,8 +419,8 @@ docker run -d -P --name nginx02 -v t-nginx:/etc/nginx:ro nginx
 docker run -d -P --name nginx02 -v t-nginx:/etc/nginx:rw nginx
 # ro 只要看到ro 就说明这个路径只能通过宿主机来操作，容器内部是无法操作的！
 ```
-# 初识Dockerfile
-## 使用dockerfile生成镜像
+## 初识Dockerfile
+### 使用dockerfile生成镜像
 Dockerfile就是用来构建docker镜像的构建文件！命令脚本！
 通过这个脚本可以生成镜像
 ```shell
@@ -473,3 +473,21 @@ drwxr-xr-x   2 root root   6 Jan 22 04:01 volume02
 ```
 查看volume01在宿主机的位置
 ![](../Docker/images/screenshot-20220123-120230.png)
+## 数据卷容器
+容器间数据卷共享
+```shell
+docker run -it volumes-from     
+```
+
+# DockerFile
+## DockerFile介绍 
+
+## DockerFile构建过程
+### 基础知识：
+1，每个保留关键字(指令)都必修是大写字母。
+
+2，执行顺序从上到下。
+
+3，#表示注释。
+
+4，每个指令都会创建一个新的镜像层，并提交！
