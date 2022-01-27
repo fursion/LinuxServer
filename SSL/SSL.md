@@ -49,8 +49,48 @@ ssh-keygen -s host_ca -I host.example.com -h -n  host.example.com -V +52 ssh_hos
     #ssh_host_rsa_key.pub：服务器公钥。
     chmod 600 ssh_host_rsa_key-cert.pub     #更改证书权限
 ```
-
 ## CA签发用户证书
+```shell
+ssh-keygen -f ~/.ssh/user_key -b 4096 -t rsa
+#上面命令会在~/.ssh目录，生成user_key（私钥）和user_key.pub（公钥）。然后，将用户公钥user_key.pub，上传或复制到 CA 服务器。接下来，就可以使用 CA 的密钥user_ca为用户公钥user_key.pub签发用户证书。
+```
+签发用户证书
+```
+ssh-keygen -s user_ca -I user@example.com -n user -V +1d user_key.pub
+    #   上面的命令会生成用户证书user_key-cert.pub（用户公钥名字加后缀-cert）。这个命令各个参数的含义如下。
+
+    #   -s：指定 CA 签发证书的密钥
+    #   -I：身份字符串，可以随便设置，相当于注释，方便区分证书，将来可以使用这个字符串撤销证书。
+    #   -n user：指定用户名，表示证书仅对该用户名有效。如果有多个用户名，使用逗号分隔。用户以该用户名登录服务器时，SSH 通过这个值，分辨应该使用哪张证书，证明自己的身份，发给服务器。
+    #   -V +1d：指定证书的有效期，这里为1天，强制用户每天都申请一次证书，提高安全性。默认情况下，证书是永远有效的。
+    #   user_key.pub：用户公钥。
+ssh-keygen -L -f 证书文件  #可以查看证书的细节
+chmod 600 user_key-cert.pub #修改密钥权限为600 rw- --- ---
+```
+## 证书安装
+### 服务器证书安装
+在/etc/ssh/sshd_config配置文件中添加
+```
+HostCertificate /etc/ssh/ssh_host_rsa_key-cert.pub
+#上述命令告诉sshd，服务器证书是哪一个文件
+```
+
+### 服务器安装CA公钥
+为了让服务器信任用户证书，必须将CA签发用户证书的公钥user_ca.pub，拷贝到服务器
+
+在/etc/ssh/sshd_config配置文件中添加
+```
+TrustedUserCAKeys /etc/ssh/user_ca.pub
+```
+上面的做法是将user_ca.pub加到/etc/ssh/sshd_config，这会产生全局效果，即服务器的所有账户都会信任user_ca签发的所有用户证书。
+
+另一种做法是将user_ca.pub加到服务器某个账户的~/.ssh/authorized_keys文件，只让该账户信任user_ca签发的用户证书。具体方法是打开~/.ssh/authorized_keys，追加一行，开头是@cert-authority principals="..."，然后后面加上user_ca.pub的内容，大概是下面这个样子。
+```
+@cert-authority principals="user" ssh-rsa AAAAB3Nz...XNRM1EX2gQ==
+```
+上面代码中，principals="user"指定用户登录的服务器账户名，一般就是authorized_keys文件所在的账户。
+
+重新启动 sshd。
 
 
 
@@ -58,9 +98,18 @@ ssh-keygen -s host_ca -I host.example.com -h -n  host.example.com -V +52 ssh_hos
 
 
 
-
-
-
+# 注意
+## 服务器端
+sshd服务必须配置服务端ca证书和用户公钥
+## 客户端配置
+客户端 ～/.ssh/known_hosts文件必须添加服务端公钥 客户端私钥和证书保存在同一位置
+证书和密钥文件的权限必须是 600 及只能文件所有者可读写 rw-  
+```
+chmod 600 user_key               #user_key为私钥文件
+chmod 600 user_key_cret.pub      #user_key_cret.pub为用户证书
+```
+    #测试  
+    ssh -i user_key user@exp.com
 
 
 参考博客[阮一峰的网络日志-SSH 证书登录教程](https://www.ruanyifeng.com/blog/2020/07/ssh-certificate.html)
