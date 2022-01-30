@@ -491,3 +491,37 @@ docker run -it volumes-from
 3，#表示注释。
 
 4，每个指令都会创建一个新的镜像层，并提交！
+### DockerFile的指令：
+```  
+    FROM                # 基础镜像信息
+    MAINTAINER          # 维护者信息  姓名加邮箱
+    RUN                 # 指定容器启动后时需要运行的命令(你想让它干啥)
+    COPY                # 类似ADD命令 将文件拷贝到容器中
+    ADD                 # 添加内容
+    EXPOSE              # 指定对外的端口
+    WORKDIR             # 设置工作目录
+    ONBUILD             # 当构建一个被继承 DockerFile 这个时候就会运行 ONBUILD 指令 触发指令
+    USER                #
+    VOLUME              # 设置卷，挂载主机目录 
+    ENV                 # 构建的时候设置环境变量  
+```
+#### 实战测试
+```
+# 1,编写DockerFile文件
+# vim dockerfile_mycentos
+
+    FROM centos
+    MAINTAINER fursion<fursion@fursion.cn>
+    ENV MYPATH /usr/local
+    WORKDIR $MYPATH
+    RUN yum -y install vim
+    RUN yum -y install net-tools
+    EXPOSE 80
+    CMD echo $MYPATH
+    CMD echo "---end---"
+    CMD /bin/bash
+# 2,使用 Docker bulid 命令构建镜像
+    docker build -f dockerfile_mycentos -t mucentos:0.0.1
+
+# 3, 
+```
