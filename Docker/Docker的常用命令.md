@@ -504,6 +504,8 @@ docker run -it volumes-from
     USER                #
     VOLUME              # 设置卷，挂载主机目录 
     ENV                 # 构建的时候设置环境变量  
+    Cmd                 # 指定容器启动的时候要运行的命令，只有最后一个会生效。可被代替。
+    ENTRYPOINT          # 指定这个容器启动的时候要运行的命令。可以追加命令
 ```
 #### 实战测试
 ```
@@ -525,3 +527,4 @@ docker run -it volumes-from
 
 # 3, 
 ```
+#### CMD 和 ENTRYPOINT 的区别
