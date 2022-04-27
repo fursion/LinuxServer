@@ -95,5 +95,6 @@ IssuingUserCertificate /etc/ssh/USER_CA $username ~/.ssh/$username/${username}_k
 cp /etc/ssh/HOST_CA.pub ~/.ssh/$username/ 
 #证书安装
 
+echo 'scp -r $user@domain'":~/.ssh/$username" 'Host_TargetPath'
 
 
