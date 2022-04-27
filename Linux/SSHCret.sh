@@ -67,7 +67,7 @@ IssuingHostCertificate(){
 IssuingUserCertificate(){
     user_ca=$1
     user_key_pub=$3
-    sudo ssh-keygen -s $user_ca -I $2@fursion.docker -n user -V +1d $user_key_pub
+    sudo ssh-keygen -s $user_ca -I $2@fursion.docker -n $2 -V +1d $user_key_pub
 }
 #用户证书生成函数key -username
 IssuingUserCertificate_key(){
