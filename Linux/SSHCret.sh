@@ -76,7 +76,7 @@ IssuingUserCertificate_key(){
     ssh-keygen -f ~/.ssh/$1/$1_key -b 4096 -t rsa
 }
 echo "证书颁发工具 1.0.0 by fursion@fursion.cn"
-echo "请输入username和validity"
+echo "请输入用户名"
 read username validity
 echo $username
 #检查CA密钥对是否存在，不存在则生成 保存路径位/etc/ssh/CA
