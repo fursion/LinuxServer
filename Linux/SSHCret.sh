@@ -77,7 +77,7 @@ IssuingUserCertificate_key(){
 }
 echo "证书颁发工具 1.0.0 by fursion@fursion.cn"
 echo "请输入用户名"
-read username validity
+read username
 echo $username
 #检查CA密钥对是否存在，不存在则生成 保存路径位/etc/ssh/CA
 CheckCA
