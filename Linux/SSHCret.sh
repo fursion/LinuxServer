@@ -1,4 +1,4 @@
-# !/bin/bash
+#!/bin/bash
 CheckCA(){
     if test -e /etc/ssh/USER_CA -a -e /etc/ssh/USER_CA.pub;then
        echo 'USER CA 已经就位!'
