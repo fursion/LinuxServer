@@ -9,6 +9,7 @@ CheckCA() {
         echo 'HOST CA 已经就位!'
     else
         CreateCA /etc/ssh/HOST_CA HOST_CA
+        sudo rm -f /etc/ssh/ssh_host_rsa_key-cert.pub #服务器CA更新后需要重新生成服务器证书
     fi
 }
 ChechHostUserCA() {
