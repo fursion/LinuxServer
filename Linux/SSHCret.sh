@@ -100,6 +100,7 @@ CheckUser() {
 }
 echo "证书颁发工具 1.0.0 by fursion@fursion.cn"
 echo "请输入用户名和服务器域名"
+echo '示例：\n user1 host.example.com\n user2 host.example.cn\n user3 host.example.net'
 read username domain
 echo "正在为用户：$username 请求主机：$domain 的证书"
 #检查系统中是否存在该用户
