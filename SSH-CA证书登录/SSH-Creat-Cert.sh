@@ -30,7 +30,7 @@ CheckHostCert() {
         fi
     else
         echo '证书不存在'
-        IssuingHostCertificate /etc/ssh/HOST_CA +52w fursion.docker /etc/ssh/ssh_host_rsa_key.pub
+        IssuingHostCertificate /etc/ssh/HOST_CA +52w $1 /etc/ssh/ssh_host_rsa_key.pub
         InstallHostCret
     fi
 }
@@ -59,7 +59,7 @@ IssuingHostCertificate() {
     validity=$2
     domain=$3
     host_pub=$4
-    sudo ssh-keygen -s $host_ca -I host.fursion.docker -h -n $domain -V $validity $host_pub
+    sudo ssh-keygen -s $host_ca -I host.$domain -h -n $domain -V $validity $host_pub
     #dd if=/dev/urandom bs=16 count=1 2>/dev/null | base64 | sed 's/=//g'  可生成16位密码短语
     sudo chmod 600 /etc/ssh/ssh_host_rsa_key-cert.pub
 }
@@ -67,7 +67,8 @@ IssuingHostCertificate() {
 IssuingUserCertificate() {
     user_ca=$1
     user_key_pub=$3
-    sudo ssh-keygen -s $user_ca -I $2@fursion.docker -n $2 -V +1d $user_key_pub
+    #第二个参数为用户名，第四个为服务器域名
+    sudo ssh-keygen -s $user_ca -I $2@$4 -n $2 -V +1d $user_key_pub
 }
 #用户证书生成函数key -username
 IssuingUserCertificate_key() {
@@ -77,10 +78,12 @@ IssuingUserCertificate_key() {
 }
 CheckUser() {
     if id -u $1 >/dev/null 2>&1; then
+        echo "用户已经存在!"Ï
+    else
         echo "用户$1不存在,是否创建此用户"
         echo "请选择操作项"
         echo "1 : 创建用户" \
-            "Q :退出"
+             "Q :退出"
         while :; do
             read item
             case $item in
@@ -92,20 +95,18 @@ CheckUser() {
             *) echo "无效输入！请重新输入！" ;;
             esac
         done
-    else
-        echo "用户已经存在!"
     fi
 }
 echo "证书颁发工具 1.0.0 by fursion@fursion.cn"
-echo "请输入用户名"
-read username
-echo $username
+echo "请输入用户名和服务器域名"
+read username domain
+echo "正在为用户：$username 请求主机：$domain 的证书"
 #检查系统中是否存在该用户
 CheckUser $username
 #检查CA密钥对是否存在，不存在则生成 保存路径位/etc/ssh/CA
 CheckCA
 ChechHostUserCA
-CheckHostCert
+CheckHostCert $domain
 
 if test -e /etc/ssh/ssh_host_rsa_key -a -e /etc/ssh/ssh_host_rsa_key.pub; then
     echo '服务器证书密钥对已经存在'
@@ -114,9 +115,9 @@ else
 fi
 
 IssuingUserCertificate_key $username
-IssuingUserCertificate /etc/ssh/USER_CA $username ~/.ssh/$username/${username}_key.pub
+IssuingUserCertificate /etc/ssh/USER_CA $username ~/.ssh/$username/${username}_key.pub $domain
 cp /etc/ssh/HOST_CA.pub ~/.ssh/$username/
 cd ~/.ssh/$username
 echo "证书已生成,保存在:$(`pwd`)"
-tree "~/.ssh/$username/"
+sudo tree "~/.ssh/$username"
 echo 'scp -r $user@domain'":~/.ssh/$username" 'Host_TargetPath'
