@@ -84,7 +84,8 @@ CheckUser() {
         echo "请选择操作项"
         echo "1 : 创建用户" \
              "Q :退出"
-        while :; do
+        while :
+        do
             read item
             case $item in
             1)
