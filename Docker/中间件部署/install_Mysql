@@ -1,0 +1,7 @@
+#!bin/bash
+#官方文档:https://hub.docker.com/_/mysql
+docker pull mysql 
+docker run -d -P -e MYSQL_ROOT_PASSWORD=my-secret-pw  --name mysql01 --network mynet mysql 
+#docker run  --name mysql02 -d -P -v /var/datadir/mysql02:/var/lib/mysql -e MYSQL_ROOT_PASSWORD="dj970619" -e MYSQL_USER="fursion" -e MYSQL_PASSWORD="dj970619"  --network mynet mysql 
+#MYSQL_USER=fursion MYSQL_PASSWORD=dj970619
+docker run --name zabbix-db-server --network mynet -e MYSQL_ROOT_PASSWORD="Dj970619" -e MYSQL_USER="zabbix" -e MYSQL_PASSWORD="dj970619" -d -P mysql

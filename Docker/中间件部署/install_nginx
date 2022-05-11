@@ -1,0 +1,12 @@
+# !bin/bash
+echo "请输入容器名"
+read nginxname
+docker run -it --name nginxtemp -d nginx:latest
+docker cp nginxtemp:/etc/nginx /var/nginx/
+docker rm -f nginxtemp
+docker run -it --name $nginxname \
+        --network mynet \
+        -v /var/nginx/$nginxname:/etc/nginx/ \
+        -p 80:80 \
+        -d \
+        nginx:latest

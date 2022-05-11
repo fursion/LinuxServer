@@ -69,7 +69,7 @@ IssuingUserCertificate() {
     user_ca=$1
     user_key_pub=$3
     #第二个参数为用户名，第四个为服务器域名
-    sudo ssh-keygen -s $user_ca -I $2@$4 -n $2 -V +1d $user_key_pub
+    sudo ssh-keygen -s $user_ca -I $2@$4 -n $2 -V +52w $user_key_pub
 }
 #用户证书生成函数key -username
 IssuingUserCertificate_key() {

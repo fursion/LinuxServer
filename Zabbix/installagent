@@ -1,0 +1,25 @@
+#!/bin/bash
+echo "#######    ##       ##   ########## "
+echo "##         ##       ##   ##       ##"
+echo "##         ##       ##   ##       ##"
+echo "#######    ##       ##   ########## "
+echo "##         ##       ##   ####       "
+echo "##         ##       ##   ##  ##     "
+echo "##         ###     ###   ##    ##   "
+echo "##          ###   ###    ##      ## "
+echo "##             ###       ##       ##"
+echo "\\n \\n \\n"
+echo "请输入容器名和zabbix主机名\\n自定义名称可以相同"
+read container_name zabbix_hostname
+echo "请输入zabbix远程服务器host地址和端口"
+read zabbix_server_host
+docker run --name $container_name \
+    -e ZBX_HOSTNAME=$zabbix_hostname \
+    -e ZBX_SERVER_HOST=$zabbix_server_host \
+    -e PHP_TZ="Asia/Shanghai" \
+    -e ZBX_SERVER_PORT=10051\
+    -v /etc/timezone:/etc/timezone \
+    -v /etc/localtime:/etc/localtime \
+    -p 10050:10050 \
+    --network mynet \
+    -d zabbix/zabbix-agent:latest
