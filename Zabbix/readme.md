@@ -12,9 +12,9 @@
 ## 为zabbix安装数据库
 ```shell
 docker run --name zabbix-db-server --network mynet \
-        -e MYSQL_ROOT_PASSWORD="Dj970619" \
+        -e MYSQL_ROOT_PASSWORD=$password \
         -e MYSQL_USER="zabbix" \
-        -e MYSQL_PASSWORD="dj970619" \
+        -e MYSQL_PASSWORD=$password \
         -d -P mysql
 ```
 ## 从docker安装zabbix----[手册](https://hub.docker.com/r/zabbix/zabbix-server-mysql/)
@@ -26,8 +26,8 @@ docker run --name zabbix-server-mysql \
             -e DB_SERVER_HOST="zabbix-db-server" -e MYSQL_USER="zabbix" \
             -e MYSQL_DATABASE="zabbix" \
             -e PHP_TZ="Asia/Shanghai" \
-            -e MYSQL_PASSWORD="dj970619"  \
-            -e MYSQL_ROOT_PASSWORD="Dj970619" \
+            -e MYSQL_PASSWORD=$password  \
+            -e MYSQL_ROOT_PASSWORD=$password \
             -p 10051:10051 \
             -v /etc/timezone:/etc/timezone \
             -v /etc/localtime:/etc/localtime \
@@ -43,8 +43,8 @@ docker run --name zabbix-web-nginx-mysql -t \
              -e MYSQL_DATABASE="zabbix" \
              -e MYSQL_USER="zabbix" \
              -e PHP_TZ="Asia/Shanghai" \
-             -e MYSQL_PASSWORD="dj970619" \
-             -e MYSQL_ROOT_PASSWORD="Dj970619" \
+             -e MYSQL_PASSWORD=$password \
+             -e MYSQL_ROOT_PASSWORD=$password \
              -v /etc/timezone:/etc/timezone \
              -v /etc/localtime:/etc/localtime \
              --network mynet \
@@ -74,8 +74,8 @@ docker run --name some-zabbix-agent --link some-zabbix-server:zabbix-server -d z
 docker run --name zabbix-proxy-mysql \
         -e DB_SERVER_HOST="zabbix-db-server"\
         -e MYSQL_USER="zabbix" \
-        -e MYSQL_PASSWORD="dj970619"  \
-        -e MYSQL_ROOT_PASSWORD="Dj970619" \
+        -e MYSQL_PASSWORD=$password  \
+        -e MYSQL_ROOT_PASSWORD=$password \
         -e ZBX_HOSTNAME=zabbix-proxy-ub \
         -e ZBX_SERVER_HOST=zabbix-server.fursion.cn \
         -e ZBX_SERVER_PORT=10051 \
